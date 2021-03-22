@@ -1,0 +1,68 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/homework?useSSL=false&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC
+    username: root
+    password: 259359
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    #Spring Boot 默认是不注入这些属性值的，需要自己绑定
+    #druid 数据源专有配置
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+
+    #配置监控统计拦截的filters，stat:监控统计、log4j：日志记录、wall：防御sql注入
+    #如果允许时报错  java.lang.ClassNotFoundException: org.apache.log4j.Priority
+    #则导入 log4j 依赖即可，Maven 地址： https://mvnrepository.com/artifact/log4j/log4j
+    filters: stat,wall,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+  mvc:
+    date-format: yyyy-MM-dd
+
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+    servlet:
+      content-type: text/html; charset=utf-8
+
+  #邮箱配置
+  mail:
+    username: 386229680@qq.com
+    password: jeqenhnzinyvcbca
+    host: smtp.qq.com
+    properties:
+      mail:
+        stmp:
+          ssl:
+            enable: true
+  session:
+    timeout: 30m
+  # 设置上传文件大小
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 5000MB
+
+mybatis-plus:
+  # mapper扫描路径
+  mapper-locations: classpath:mapper/*.xml
+  # 下划线转小驼峰
+  configuration:
+    map-underscore-to-camel-case: true
+
+server:
+  port: 9527
+  base:
+    url: http://localhost:9527
