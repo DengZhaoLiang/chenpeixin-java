@@ -32,11 +32,8 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("phone", request.getPhone());
         wrapper.eq("password", request.getPassword());
-        User user = Optional.ofNullable(mUserMapper.selectOne(wrapper))
+        return Optional.ofNullable(mUserMapper.selectOne(wrapper))
                 .orElseThrow(() -> new RuntimeException("账号密码错误，请重新输入"));
-        user.setLastLoginAt(Instant.now().getEpochSecond());
-        mUserMapper.updateById(user);
-        return user;
     }
 
     @Override
@@ -67,6 +64,12 @@ public class UserServiceImpl implements UserService {
         updateWrapper.set(!StringUtils.isEmpty(user.getName()), "name", user.getName());
         updateWrapper.set(!StringUtils.isEmpty(user.getPhone()), "phone", user.getPhone());
         updateWrapper.set(!StringUtils.isEmpty(user.getPassword()), "password", user.getPassword());
+        updateWrapper.set(!ObjectUtils.isEmpty(user.getGender()), "gender", user.getGender());
+        updateWrapper.set(!ObjectUtils.isEmpty(user.getRole()), "role", user.getRole());
+        updateWrapper.set(!StringUtils.isEmpty(user.getSpeciality()), "speciality", user.getSpeciality());
+        updateWrapper.set(!StringUtils.isEmpty(user.getGrade()), "grade", user.getGrade());
+        updateWrapper.set(!StringUtils.isEmpty(user.getNumber()), "number", user.getNumber());
+        updateWrapper.set(!StringUtils.isEmpty(user.getClbum()), "clbum", user.getClbum());
         updateWrapper.eq("id", user.getId());
         mUserMapper.update(user, updateWrapper);
         return mUserMapper.selectById(user.getId());

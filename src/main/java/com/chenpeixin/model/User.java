@@ -33,14 +33,39 @@ public class User {
     private String name;
 
     /**
+     * 性别 1-男 2-女
+     */
+    private Integer gender;
+
+    /**
      * 头像
      */
     private String avatar;
 
     /**
-     * 最近登录时间
+     * 角色 1-管理员 2-教师 3-学生
      */
-    private Long lastLoginAt;
+    private Integer role;
+
+    /**
+     * 专业
+     */
+    private String speciality;
+
+    /**
+     * 年级
+     */
+    private String grade;
+
+    /**
+     * 学号
+     */
+    private String number;
+
+    /**
+     * 班级
+     */
+    private String clbum;
 
     /**
      * 创建时间
