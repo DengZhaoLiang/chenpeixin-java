@@ -23,4 +23,9 @@ public interface UserService {
      * 更新用户
      */
     User updateUser(User user);
+
+    /**
+     * 查询用户
+     */
+    User selectUser(Long id);
 }

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -73,5 +72,10 @@ public class UserServiceImpl implements UserService {
         updateWrapper.eq("id", user.getId());
         mUserMapper.update(user, updateWrapper);
         return mUserMapper.selectById(user.getId());
+    }
+
+    @Override
+    public User selectUser(Long id) {
+        return mUserMapper.selectById(id);
     }
 }
