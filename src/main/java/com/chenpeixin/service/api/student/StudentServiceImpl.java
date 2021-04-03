@@ -2,11 +2,22 @@ package com.chenpeixin.service.api.student;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.chenpeixin.assembler.CourseAssembler;
 import com.chenpeixin.assembler.StudentAssembler;
 import com.chenpeixin.assembler.UserAssembler;
 import com.chenpeixin.constant.RoleType;
 import com.chenpeixin.dto.IDSRequest;
+import com.chenpeixin.dto.api.teacher.CourseResponse;
+import com.chenpeixin.mapper.CourseInfoMapper;
+import com.chenpeixin.mapper.CourseMapper;
+import com.chenpeixin.mapper.PortfolioMapper;
+import com.chenpeixin.mapper.SemesterCourseInfoMapper;
+import com.chenpeixin.mapper.SemesterMapper;
 import com.chenpeixin.mapper.UserMapper;
+import com.chenpeixin.model.CourseInfo;
+import com.chenpeixin.model.Portfolio;
+import com.chenpeixin.model.Semester;
+import com.chenpeixin.model.SemesterCourseInfo;
 import com.chenpeixin.model.Student;
 import com.chenpeixin.model.User;
 import org.apache.logging.log4j.util.Strings;
@@ -41,6 +52,24 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private StudentAssembler mStudentAssembler;
 
+    @Autowired
+    private PortfolioMapper mPortfolioMapper;
+
+    @Autowired
+    private SemesterMapper mSemesterMapper;
+
+    @Autowired
+    private CourseInfoMapper mCourseInfoMapper;
+
+    @Autowired
+    private SemesterCourseInfoMapper mSemesterCourseInfoMapper;
+
+    @Autowired
+    private CourseAssembler mCourseAssembler;
+
+    @Autowired
+    private CourseMapper mCourseMapper;
+
     @Value("${server.base.url}")
     private String url;
 
@@ -51,7 +80,12 @@ public class StudentServiceImpl implements StudentService {
         wrapper.eq("role", RoleType.STUDENT.getType());
         List<Student> students = mUserMapper.selectList(wrapper)
                 .stream()
-                .map(user -> mUserAssembler.toStudent(user))
+                .map(user -> {
+                    Student student = mUserAssembler.toStudent(user);
+                    // 设置学籍信息
+                    Portfolio portfolio = mPortfolioMapper.selectById(user.getPortfolioId());
+                    return mStudentAssembler.toStudent(portfolio, student);
+                })
                 .collect(Collectors.toList());
         return new PageImpl<>(students.stream()
                 .skip((page.getPageNumber()) * page.getPageSize())
@@ -64,7 +98,11 @@ public class StudentServiceImpl implements StudentService {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("role", RoleType.STUDENT.getType());
         wrapper.eq(!ObjectUtils.isEmpty(id), "id", id);
-        return mUserAssembler.toStudent(mUserMapper.selectOne(wrapper));
+        User user = mUserMapper.selectOne(wrapper);
+        Student student = mUserAssembler.toStudent(user);
+        // 设置学籍信息
+        Portfolio portfolio = mPortfolioMapper.selectById(user.getPortfolioId());
+        return mStudentAssembler.toStudent(portfolio, student);
     }
 
     @Override
@@ -113,5 +151,52 @@ public class StudentServiceImpl implements StudentService {
         wrapper.eq("role", RoleType.STUDENT.getType());
         wrapper.in("id", request.getIds());
         mUserMapper.delete(wrapper);
+    }
+
+    @Override
+    public Page<CourseResponse> pageCourses(Pageable pageable, Long id, String semesterName) {
+        PageRequest page = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
+        List<CourseResponse> courses;
+
+        if (Strings.isNotBlank(semesterName)) {
+            QueryWrapper<Semester> semesterQueryWrapper = new QueryWrapper<>();
+            semesterQueryWrapper.eq("name", semesterName);
+            List<Long> semesterIds = mSemesterMapper.selectList(semesterQueryWrapper)
+                    .stream()
+                    .map(Semester::getId)
+                    .collect(Collectors.toList());
+            QueryWrapper<SemesterCourseInfo> semesterCourseInfoQueryWrapper = new QueryWrapper<>();
+            semesterCourseInfoQueryWrapper.in("semester_id", semesterIds);
+            List<Long> courseInfoId = mSemesterCourseInfoMapper.selectList(semesterCourseInfoQueryWrapper)
+                    .stream()
+                    .map(SemesterCourseInfo::getCourseInfoId)
+                    .collect(Collectors.toList());
+            courses = mCourseInfoMapper.selectBatchIds(courseInfoId)
+                    .stream()
+                    .map(info -> {
+                        CourseResponse courseResponse = mCourseAssembler.toResponse(info);
+                        courseResponse.setName(mCourseMapper.selectById(info.getCourseId()).getName());
+                        return courseResponse;
+                    }).collect(Collectors.toList());
+        } else {
+            QueryWrapper<User> wrapper = new QueryWrapper<>();
+            wrapper.eq("role", RoleType.STUDENT.getType());
+            wrapper.eq("id", id);
+            User user = mUserMapper.selectOne(wrapper);
+            QueryWrapper<CourseInfo> courseInfoQueryWrapper = new QueryWrapper<>();
+            courseInfoQueryWrapper.eq("portfolio_id", user.getPortfolioId());
+
+            courses = mCourseInfoMapper.selectList(courseInfoQueryWrapper).stream()
+                    .map(info -> {
+                        CourseResponse courseResponse = mCourseAssembler.toResponse(info);
+                        courseResponse.setName(mCourseMapper.selectById(info.getCourseId()).getName());
+                        return courseResponse;
+                    }).collect(Collectors.toList());
+        }
+
+        return new PageImpl<>(courses.stream()
+                .skip((page.getPageNumber()) * page.getPageSize())
+                .limit(page.getPageSize())
+                .collect(Collectors.toList()), page, courses.size());
     }
 }

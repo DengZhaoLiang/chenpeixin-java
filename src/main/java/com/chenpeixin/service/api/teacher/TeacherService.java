@@ -1,6 +1,7 @@
 package com.chenpeixin.service.api.teacher;
 
 import com.chenpeixin.dto.IDSRequest;
+import com.chenpeixin.dto.api.teacher.CourseResponse;
 import com.chenpeixin.model.Teacher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,4 +41,9 @@ public interface TeacherService {
      * 批量删除老师
      */
     void batchDeleteTeacher(IDSRequest request);
+
+    /**
+     * 查看课程列表
+     */
+    Page<CourseResponse> pageCourses(Pageable pageable, Long id);
 }

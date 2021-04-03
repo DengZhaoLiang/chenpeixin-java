@@ -1,6 +1,7 @@
 package com.chenpeixin.service.api.student;
 
 import com.chenpeixin.dto.IDSRequest;
+import com.chenpeixin.dto.api.teacher.CourseResponse;
 import com.chenpeixin.model.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,4 +41,9 @@ public interface StudentService {
      * 批量删除学生
      */
     void batchDeleteStudent(IDSRequest request);
+
+    /**
+     * 查看课程
+     */
+    Page<CourseResponse> pageCourses(Pageable pageable, Long id, String semesterName);
 }

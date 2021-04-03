@@ -6,6 +6,9 @@ import com.chenpeixin.assembler.TeacherAssembler;
 import com.chenpeixin.assembler.UserAssembler;
 import com.chenpeixin.constant.RoleType;
 import com.chenpeixin.dto.IDSRequest;
+import com.chenpeixin.dto.api.teacher.CourseResponse;
+import com.chenpeixin.mapper.CourseMapper;
+import com.chenpeixin.mapper.SpecialityMapper;
 import com.chenpeixin.mapper.UserMapper;
 import com.chenpeixin.model.Teacher;
 import com.chenpeixin.model.User;
@@ -41,6 +44,12 @@ public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private TeacherAssembler mTeacherAssembler;
 
+    @Autowired
+    private SpecialityMapper mSpecialityMapper;
+
+    @Autowired
+    private CourseMapper mCourseMapper;
+
     @Value("${server.base.url}")
     private String url;
 
@@ -51,7 +60,11 @@ public class TeacherServiceImpl implements TeacherService {
         wrapper.eq("role", RoleType.TEACHER.getType());
         List<Teacher> teachers = mUserMapper.selectList(wrapper)
                 .stream()
-                .map(user -> mUserAssembler.toTeacher(user))
+                .map(user -> {
+                    Teacher teacher = mUserAssembler.toTeacher(user);
+                    teacher.setSpeciality(mSpecialityMapper.selectById(user.getSpecialityId()).getName());
+                    return teacher;
+                })
                 .collect(Collectors.toList());
         return new PageImpl<>(teachers.stream()
                 .skip((page.getPageNumber()) * page.getPageSize())
@@ -110,5 +123,18 @@ public class TeacherServiceImpl implements TeacherService {
         wrapper.eq("role", RoleType.TEACHER.getType());
         wrapper.in("id", request.getIds());
         mUserMapper.delete(wrapper);
+    }
+
+    @Override
+    public Page<CourseResponse> pageCourses(Pageable pageable, Long id) {
+        PageRequest page = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
+        List<CourseResponse> courses = mCourseMapper.pageCourses(id)
+                .stream()
+                .map(course -> course)
+                .collect(Collectors.toList());
+        return new PageImpl<>(courses.stream()
+                .skip((page.getPageNumber()) * page.getPageSize())
+                .limit(page.getPageSize())
+                .collect(Collectors.toList()), page, courses.size());
     }
 }

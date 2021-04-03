@@ -1,13 +1,13 @@
-package com.chenpeixin.service.api.user;
+package com.chenpeixin.service.api;
 
 import com.chenpeixin.dto.api.user.LoginRequest;
 import com.chenpeixin.model.User;
 
 /**
  * @author chenpeixin
- * 2021-02-10
+ * 2021-04-03
  */
-public interface UserService {
+public interface LoginService {
 
     /**
      * 登录
@@ -18,14 +18,4 @@ public interface UserService {
      * 注册
      */
     void register(User user);
-
-    /**
-     * 更新用户
-     */
-    User updateUser(User user);
-
-    /**
-     * 查询用户
-     */
-    User selectUser(Long id);
 }

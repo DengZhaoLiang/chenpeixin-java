@@ -1,6 +1,7 @@
 package com.chenpeixin.controller.api.teacher;
 
 import com.chenpeixin.dto.IDSRequest;
+import com.chenpeixin.dto.api.teacher.CourseResponse;
 import com.chenpeixin.model.Teacher;
 import com.chenpeixin.service.api.teacher.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,10 @@ public class TeacherController {
     @DeleteMapping("/batch")
     public void batchDeleteTeacher(@RequestBody @Validated IDSRequest request) {
         mTeacherService.batchDeleteTeacher(request);
+    }
+
+    @GetMapping("/course/{id}")
+    public Page<CourseResponse> pageCourses(Pageable pageable, @PathVariable Long id) {
+        return mTeacherService.pageCourses(pageable, id);
     }
 }

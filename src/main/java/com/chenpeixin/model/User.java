@@ -48,24 +48,19 @@ public class User {
     private Integer role;
 
     /**
-     * 专业
-     */
-    private String speciality;
-
-    /**
-     * 年级
-     */
-    private String grade;
-
-    /**
      * 学号
      */
     private String number;
 
     /**
-     * 班级
+     * 专业ID
      */
-    private String clbum;
+    private Long specialityId;
+
+    /**
+     * 学籍ID
+     */
+    private Long portfolioId;
 
     /**
      * 创建时间

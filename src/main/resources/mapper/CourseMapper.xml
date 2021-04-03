@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chenpeixin.mapper.CourseMapper">
+    
+    <select id="pageCourses" resultType="com.chenpeixin.dto.api.teacher.CourseResponse">
+        select `course`.`name`,
+               `course_info`.`place`,
+               `course_info`.`weekday`,
+               `course_info`.`start`,
+               `course_info`.`end`,
+               `course_info`.`id`
+        from `course`
+                 left join `course_info` on `course_info`.`course_id` = `course`.`id`
+        where `course`.`user_id` = #{id}
+    </select>
+</mapper>

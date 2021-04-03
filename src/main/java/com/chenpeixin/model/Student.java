@@ -48,6 +48,16 @@ public class Student {
     private Integer role;
 
     /**
+     * 专业ID
+     */
+    private Long specialityId;
+
+    /**
+     * 学籍ID
+     */
+    private Long portfolioId;
+
+    /**
      * 专业
      */
     private String speciality;

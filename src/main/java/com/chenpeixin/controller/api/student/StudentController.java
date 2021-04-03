@@ -1,6 +1,7 @@
 package com.chenpeixin.controller.api.student;
 
 import com.chenpeixin.dto.IDSRequest;
+import com.chenpeixin.dto.api.teacher.CourseResponse;
 import com.chenpeixin.model.Student;
 import com.chenpeixin.service.api.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -56,5 +58,10 @@ public class StudentController {
     @DeleteMapping("/batch")
     public void batchDeleteStudent(@RequestBody @Validated IDSRequest request) {
         mStudentService.batchDeleteStudent(request);
+    }
+
+    @GetMapping("/course/{id}")
+    public Page<CourseResponse> pageCourses(Pageable pageable, @PathVariable Long id, @RequestParam(required = false) String semesterName) {
+        return mStudentService.pageCourses(pageable, id, semesterName);
     }
 }
