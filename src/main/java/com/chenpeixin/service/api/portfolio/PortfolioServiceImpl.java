@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.util.List;
@@ -29,9 +30,11 @@ public class PortfolioServiceImpl implements PortfolioService {
     private PortfolioMapper mPortfolioMapper;
 
     @Override
-    public Page<Portfolio> pagePortfolios(Pageable pageable) {
+    public Page<Portfolio> pagePortfolios(Portfolio portfolio, Pageable pageable) {
         PageRequest page = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
         QueryWrapper<Portfolio> wrapper = new QueryWrapper<>();
+        wrapper.eq(Strings.isNotBlank(portfolio.getGrade()),"grade", portfolio.getGrade());
+        wrapper.eq(Objects.nonNull(portfolio.getSpecialityId()),"speciality_id", portfolio.getSpecialityId());
         List<Portfolio> portfolios = mPortfolioMapper.selectList(wrapper);
         return new PageImpl<>(portfolios.stream()
                 .skip((page.getPageNumber()) * page.getPageSize())
@@ -40,7 +43,13 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
+    public Portfolio selectPortfolios(Long id) {
+        return mPortfolioMapper.selectById(id);
+    }
+
+    @Override
     public void insertPortfolio(Portfolio portfolio) {
+        // 校验是否成功
         mPortfolioMapper.insert(portfolio);
     }
 

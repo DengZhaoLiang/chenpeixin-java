@@ -34,6 +34,11 @@ public class CourseController {
         return mCourseService.pageCourses(pageable);
     }
 
+    @GetMapping("/{id}")
+    public Course selectSemester(@PathVariable Long id) {
+        return mCourseService.selectCourse(id);
+    }
+
     @PostMapping("")
     public void insertCourse(@RequestBody @Validated Course course) {
         mCourseService.insertCourse(course);

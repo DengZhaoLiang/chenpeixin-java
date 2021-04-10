@@ -39,6 +39,17 @@ public class SpecialityServiceImpl implements SpecialityService {
     }
 
     @Override
+    public List<Speciality> getSpeciality() {
+        QueryWrapper<Speciality> wrapper = new QueryWrapper<>();
+        return mSpecialityMapper.selectList(wrapper);
+    }
+
+    @Override
+    public Speciality selectSpeciality(Long id) {
+        return mSpecialityMapper.selectById(id);
+    }
+
+    @Override
     public void insertSpeciality(Speciality speciality) {
         mSpecialityMapper.insert(speciality);
     }

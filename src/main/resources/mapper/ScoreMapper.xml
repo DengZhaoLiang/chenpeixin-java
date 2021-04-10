@@ -2,4 +2,56 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.chenpeixin.mapper.ScoreMapper">
 
+    <select id="selectScoreList" resultType="com.chenpeixin.dto.api.score.ScoreResponse">
+        select
+            s.id, s.score,
+            q.specialityId, q.speciality,
+            q.portfolioId, q.grade, q.className,
+            q.courseId, q.course,
+            u.id as userId, u.name as user
+        from score s
+        left join user u on s.user_id = u.id
+        left join
+        (select
+            ci.id as id,
+						p.id as portfolioId,
+            p.grade as grade,
+						sp.id as specialityId,
+            sp.name as speciality,
+            p.clbum as className,
+						c.id as courseId,
+            c.name as course
+        from course_info ci
+        left join course c on ci.course_id = c.id
+        left join portfolio p on ci.portfolio_id = p.id
+        left join speciality sp on p.speciality_id = sp.id) q
+        on s.course_info_id = q.id
+    </select>
+
+    <select id="queryById" resultType="com.chenpeixin.dto.api.score.ScoreResponse">
+        select
+            s.id, s.score,
+            q.specialityId, q.speciality,
+            q.portfolioId, q.grade, q.className,
+            q.courseId, q.course,
+            u.id as userId, u.name as user
+        from score s
+        left join user u on s.user_id = u.id
+        left join
+        (select
+            ci.id as id,
+						p.id as portfolioId,
+            p.grade as grade,
+						sp.id as specialityId,
+            sp.name as speciality,
+            p.clbum as className,
+						c.id as courseId,
+            c.name as course
+        from course_info ci
+        left join course c on ci.course_id = c.id
+        left join portfolio p on ci.portfolio_id = p.id
+        left join speciality sp on p.speciality_id = sp.id) q
+        on s.course_info_id = q.id
+        where s.id = #{id}
+    </select>
 </mapper>

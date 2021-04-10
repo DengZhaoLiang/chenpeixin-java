@@ -1,6 +1,7 @@
 package com.chenpeixin.controller.api.portfolio;
 
 import com.chenpeixin.dto.IDSRequest;
+import com.chenpeixin.dto.api.score.ScoreResponse;
 import com.chenpeixin.model.Portfolio;
 import com.chenpeixin.service.api.portfolio.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,13 @@ public class PortfolioController {
     private PortfolioService mPortfolioService;
 
     @GetMapping("")
-    public Page<Portfolio> pagePortfolios(Pageable pageable) {
-        return mPortfolioService.pagePortfolios(pageable);
+    public Page<Portfolio> pagePortfolios(Portfolio portfolio, Pageable pageable) {
+        return mPortfolioService.pagePortfolios(portfolio, pageable);
+    }
+
+    @GetMapping("/{id}")
+    public Portfolio selectScore(@PathVariable Long id) {
+        return mPortfolioService.selectPortfolios(id);
     }
 
     @PostMapping("")

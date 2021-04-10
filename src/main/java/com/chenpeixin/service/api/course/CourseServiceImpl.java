@@ -51,6 +51,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Course selectCourse(Long id) {
+        return mCourseMapper.selectById(id);
+    }
+
+    @Override
     public void insertCourse(Course course) {
         mCourseMapper.insert(course);
     }
@@ -59,7 +64,7 @@ public class CourseServiceImpl implements CourseService {
     public void updateCourse(Course course) {
         UpdateWrapper<Course> wrapper = new UpdateWrapper<>();
         wrapper.set(Strings.isNotBlank(course.getName()), "name", course.getName());
-        wrapper.set(!Objects.isNull(course.getUserId()), "user_id", course.getUserId());
+//        wrapper.set(!Objects.isNull(course.getUserId()), "user_id", course.getUserId());
         course.setUpdatedAt(Instant.now().getEpochSecond());
         wrapper.eq("id", course.getId());
         mCourseMapper.update(course, wrapper);

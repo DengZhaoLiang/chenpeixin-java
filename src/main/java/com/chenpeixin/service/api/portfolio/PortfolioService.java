@@ -14,7 +14,12 @@ public interface PortfolioService {
     /**
      * 分页获取学籍信息
      */
-    Page<Portfolio> pagePortfolios(Pageable pageable);
+    Page<Portfolio> pagePortfolios(Portfolio portfolio, Pageable pageable);
+
+    /**
+     * 根据ID获取学籍信息
+     */
+    Portfolio selectPortfolios(Long id);
 
     /**
      * 新增学籍

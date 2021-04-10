@@ -18,6 +18,11 @@ public interface CourseService {
     Page<Course> pageCourses(Pageable pageable);
 
     /**
+     * 获取课程信息
+     */
+    Course selectCourse(Long id);
+
+    /**
      * 新增课程
      */
     void insertCourse(Course course);

@@ -23,11 +23,6 @@ public class Course {
     private String name;
 
     /**
-     * 教师ID
-     */
-    private Long userId;
-
-    /**
      * 创建时间
      */
     private Long createdAt;

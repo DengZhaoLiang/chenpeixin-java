@@ -1,6 +1,7 @@
 package com.chenpeixin.controller.api.speciality;
 
 import com.chenpeixin.dto.IDSRequest;
+import com.chenpeixin.model.Semester;
 import com.chenpeixin.model.Speciality;
 import com.chenpeixin.service.api.speciality.SpecialityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author chenpeixin
@@ -31,6 +34,16 @@ public class SpecialityController {
     @GetMapping("")
     public Page<Speciality> pageSpecialities(Pageable pageable) {
         return mSpecialityService.pageSpecialities(pageable);
+    }
+
+    @GetMapping("/getSpeciality")
+    public List<Speciality> getSpeciality() {
+        return mSpecialityService.getSpeciality();
+    }
+
+    @GetMapping("/{id}")
+    public Speciality selectSpeciality(@PathVariable Long id) {
+        return mSpecialityService.selectSpeciality(id);
     }
 
     @PostMapping("")
